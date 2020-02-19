@@ -1,5 +1,12 @@
 var containerCell = document.getElementsByClassName("container-cell")[0];
 var containerPiece = document.getElementsByClassName("container-piece")[0];
+
+document.onkeypress = documentOnKeyPress;
+
+document.getElementById("closeDialog").onclick = function (e) {
+	document.getElementById("dialog").style.display = "none";
+};
+
 // divide by 4 because number of collumns and rows
 var width = containerCell.offsetWidth / 4;
 var height = containerCell.offsetHeight / 4;
@@ -97,7 +104,7 @@ function cellOnClick(e) {
 			selectedCell.dataset.full = "true";
 		}
 		else {
-			if (selectedPiece == selectedCell) {
+			if (selectedPiece === selectedCell) {
 				selectedPiece.onclick = pieceOnClick;
 				containerPiece.getElementsByTagName("div")[selectedCell.dataset.position-1].appendChild(selectedCell);
 			}
@@ -121,10 +128,40 @@ function cellOnClick(e) {
 	}
 };
 
+function documentOnKeyPress(e) {
+	//console.log(e.key + "->" + e.keyCode);
+	if (e.keyCode == 69 || e.keyCode == 101) {
+		let dialog = document.getElementById("dialog");
+		let result = evalBoard();
+		dialog.children[0].src = result ? "img/link_chiquito.jpg" : "img/33.jpg";
+		dialog.children[1].innerText = "weeeeey " + (result ? "siiiiiii" : "noooooooo") + "!!! 😩😭👌👅🔥💦🍆💯"
+		dialog.style.display = "block";
+		if (!result) sendBackPieces();
+	}
+};
 
+function evalBoard() {
+	var cells = containerCell.children;
+	for (cell of cells) {
+		try {
+			if (cell.dataset.position != cell.children[0].dataset.position) return false;
+		}
+		catch (err) {
+			return false;
+		}
+	}
+	return true;
+};
 
-
-
+function sendBackPieces() {
+	for (cell of containerCell.children) {
+		try {
+			let imgToSend = cell.children[0];
+			imgToSend.onclick = pieceOnClick;
+			containerPiece.children[imgToSend.dataset.position-1].appendChild(imgToSend);
+		} catch(err) {}
+	}
+}
 
 
 

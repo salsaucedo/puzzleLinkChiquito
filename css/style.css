@@ -28,3 +28,23 @@
 	grid-template-rows: 25% 25% 25% 25%;
 	background-color: #5214FF;
 }
+
+#dialog {
+	padding: 2em;
+	position: absolute;
+	width: 50%;
+	text-align: center;
+	background-color: white;
+	display: none;
+}
+
+#dialog > #imgDialog {
+	border-radius: 50%;
+	border: 2px solid black;
+	width: 100px;
+}
+
+#dialog > button {
+	padding: 3px;
+	background-color: green;
+}
