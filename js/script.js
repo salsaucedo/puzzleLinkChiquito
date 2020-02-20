@@ -32,6 +32,7 @@ function createPiece(piece, width, height) {
 	var cellElement = document.createElement("div");
 	cellElement.style.width = width;
 	cellElement.style.height = height;
+	cellElement.dataset.origVal = piece.origVal;
 	cellElement.style.border = "1px solid black";
 	var pieceElement = document.createElement("img");
 	pieceElement.width = width;
@@ -40,6 +41,7 @@ function createPiece(piece, width, height) {
 	pieceElement.onclick = pieceOnClick;
 	pieceElement.src = piece.image;
 	pieceElement.dataset.position = piece.position;
+	pieceElement.dataset.origVal = piece.origVal;
 	cellElement.appendChild(pieceElement);
 	return cellElement;
 };
@@ -55,6 +57,9 @@ function createPieces() {
 	var w = containerPiece.offsetWidth / 4;
 	var h = containerPiece.offsetHeight / 4;
 	var pieces = generatePieceData();
+	pieces.sort(function(a, b) {
+		return (a.origVal < b.origVal) ? 1 : -1;
+	});
 	for (var i = 0; i < pieces.length; i++) {
 		let pieceElement = createPiece(pieces[i], w, h);
 		addPiece(pieceElement);
@@ -67,6 +72,20 @@ function addCell(element) {
 
 function addPiece(element) {
 	containerPiece.appendChild(element);
+	// let children = containerPiece.children;
+	// if (containerPiece.childElementCount == 0) {
+	// 	containerPiece.appendChild(element);
+	// 	return;
+	// }
+	// let i = 0
+	// let aux = children[0];
+	// for (child in children) {
+	// 	if (element.dataset.origVal > children[child].dataset.origVal) {
+	// 		aux = children[child];
+	// 		break;
+	// 	}
+	// }
+	// containerPiece.insertBefore(element, aux);
 };
 
 function generatePieceData() {
@@ -76,6 +95,7 @@ function generatePieceData() {
 			let piece = {
 				image: "img/" + i.toString() + j.toString() + ".jpg",
 				position: (j) + (i-1)*4,
+				origVal: Math.floor(Math.random() * 500),
 			};
 			pieces.push(piece);
 		}
@@ -158,7 +178,12 @@ function sendBackPieces() {
 		try {
 			let imgToSend = cell.children[0];
 			imgToSend.onclick = pieceOnClick;
-			containerPiece.children[imgToSend.dataset.position-1].appendChild(imgToSend);
+			for (child of containerPiece.children) {
+				if (child.dataset.origVal == imgToSend.dataset.origVal && child.childElementCount == 0){
+					child.appendChild(imgToSend);
+					break;
+				}
+			}
 		} catch(err) {}
 	}
 }
